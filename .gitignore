@@ -1,0 +1,5 @@
+.git
+.RData
+*.fasta
+*.mp3
+*.Rhistory
