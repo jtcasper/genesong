@@ -9,8 +9,8 @@ library("Biostrings")
 
 #define constants
 
-#octave multipler. 0 = start at a3
-octave = 0
+#octave multipler. 0 = start at a3, 1 = start at a4, ...
+octave = 2
 
 #pitches
 pitches <- list(220.000*(2^octave), 233.082*(2^octave), 246.942*(2^octave), 261.626*(2^octave),
@@ -23,8 +23,8 @@ names(pitches) <- c("AA", "AT", "AC", "AG", "TA", "TT", "TC", "GG",
 #sample rate
 rate = 8000
 
-#bpm 1 = 60 bpm 2 = 129 bpm, ...
-bpm = 1
+#bpm 1 = 60 bpm 2 = 120 bpm, ...
+bpm = 4
 
 #sixteen beat
 t_sixteenth = seq(0, 0.5/bpm, 1/rate)
@@ -42,15 +42,16 @@ beats <- list(t_sixteenth, t_quarter, t_half, t_whole)
 names(beats) <- c("A", "T", "C", "G")
 
 #chords
+#TODO implement chords
 
 chords <- list(0, 0, 0, 0)
 names(chords) <- c("A", "T", "C", "G")
 
 parsePitch <- function(sequence){
-  charseq <- as.character(sequence)
-  note <- substr(charseq, start= 1, stop= 2)
-  length <- substr(charseq, start= 3, stop= 3)
-  chord <- substr(charseq, start= 4, stop=4)
+#  charseq <- as.character(sequence)
+  note <- substr(sequence, start= 1, stop= 2)
+  length <- substr(sequence, start= 3, stop= 3)
+  chord <- substr(sequence, start= 4, stop=4)
   pitch <- pitches[[note]]
   beat <- beats[[length]]
   chord_type <- chords[[chord]]
@@ -60,21 +61,22 @@ parsePitch <- function(sequence){
   return(wave)
 }
 
-u = (2^15-1)*sin(2*pi*440*t_whole) #440 Hz sine wave that lasts t length seconds (here, 3 seconds) 
-rswavew = Wave(u, samp.rate = rate, bit=16)
-sound = bind(rswavew)
+#u = (2^15-1)*sin(2*pi*440*t_whole) #440 Hz sine wave that lasts t length seconds (here, 3 seconds) 
+#rswavew = Wave(u, samp.rate = rate, bit=16)
+#sound = bind(rswavew)
 #play(sound) #play the wave data by the default player
 
 
 s <- readDNAStringSet("./sequence.fasta")
 len <- width(s)
-sub <- subseq(s, start = 1, end = 4)
+s_str <- as.character(s)
+sub <- substr(s_str, start = 1, stop = 4)
 song <- parsePitch(sub)
 for(i in seq(from=5, to=len-3, by=4)){
-  sub <- subseq(s, start=i, end=i+3)
+  sub <- substr(s_str, start=i, stop=i+3)
   song = bind(song, parsePitch(sub))
   print(i)
   print(i/(len-3))
 }
-writeWave(song, "out.wav")
-play(song)
+writeWave(song, "out3.wav")
+#play(song)
