@@ -72,7 +72,7 @@ parsePitch <- function(sequence){
     #major chord == 3
     else {
       pitch2 <- wave * (5/4)
-      pitch3 <- wave * (6/5)
+      pitch3 <- wave * (3/2)
     }
     wave <- wave + pitch2 + pitch3
     wave <- normalize(wave, unit = "16")
