@@ -43,6 +43,7 @@ names(beats) <- c("A", "T", "C", "G")
 
 #chords
 
+ENABLE_CHORDS <- TRUE
 chords <- list(0, 1, 2, 3)
 names(chords) <- c("A", "T", "C", "G")
 
@@ -57,7 +58,7 @@ parsePitch <- function(sequence){
   
   
   wave <- Wave((2^15-1)*sin(2*pi*pitch*beat), samp.rate = rate, bit=16)
-  if(chord_type > 0){
+  if(ENABLE_CHORDS && chord_type > 0){
     #major third
     pitch2 <- 0
     pitch3 <- 0
