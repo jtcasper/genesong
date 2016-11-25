@@ -10,7 +10,7 @@ library("Biostrings")
 #define constants
 
 #octave multipler. 0 = start at a3, 1 = start at a4, ...
-octave = 2
+octave = 1
 
 #pitches
 pitches <- list(220.000*(2^octave), 233.082*(2^octave), 246.942*(2^octave), 261.626*(2^octave),
@@ -42,9 +42,8 @@ beats <- list(t_sixteenth, t_quarter, t_half, t_whole)
 names(beats) <- c("A", "T", "C", "G")
 
 #chords
-#TODO implement chords
 
-chords <- list(0, 0, 0, 0)
+chords <- list(0, 1, 2, 3)
 names(chords) <- c("A", "T", "C", "G")
 
 parsePitch <- function(sequence){
@@ -57,7 +56,27 @@ parsePitch <- function(sequence){
   chord_type <- chords[[chord]]
   
   
-  wave = Wave((2^15-1)*sin(2*pi*pitch*beat), samp.rate = rate, bit=16)
+  wave <- Wave((2^15-1)*sin(2*pi*pitch*beat), samp.rate = rate, bit=16)
+  if(chord_type > 0){
+    #major third
+    pitch2 <- 0
+    pitch3 <- 0
+    if(chord_type == 1){
+      pitch2 <- wave * (5/4)
+    }
+    #minor third
+    else if(chord_type == 2){
+      pitch2 <- wave * (6/5)
+      
+    }
+    #major chord == 3
+    else {
+      pitch2 <- wave * (5/4)
+      pitch3 <- wave * (6/5)
+    }
+    wave <- wave + pitch2 + pitch3
+    wave <- normalize(wave, unit = "16")
+  }
   return(wave)
 }
 
